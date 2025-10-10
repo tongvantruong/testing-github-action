@@ -1,0 +1,31 @@
+name: test-concurrency
+
+on:
+  workflow_dispatch:
+
+# concurrency group ensures only one run per branch can run at a time
+concurrency:
+  group: test-concurrency-${{ github.ref }}
+  cancel-in-progress: true # change to false to test concurrent runs
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show start time
+        run: |
+          echo "Run started at $(date -u '+%Y-%m-%dT%H:%M:%SZ') UTC"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Commit SHA: ${{ github.sha }}"
+
+      - name: Simulate long task
+        run: |
+          echo "Simulating a 2-minute task..."
+          for i in $(seq 1 120); do
+            echo "second $i"
+            sleep 1
+          done
+
+      - name: Show end time
+        run: |
+          echo "Run ended at $(date -u '+%Y-%m-%dT%H:%M:%SZ') UTC"
