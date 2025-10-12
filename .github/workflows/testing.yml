@@ -6,7 +6,7 @@ on:
 # concurrency group ensures only one run per branch can run at a time
 concurrency:
   group: test-concurrency-${{ github.ref }}
-  cancel-in-progress: true # change to false to test concurrent runs
+  cancel-in-progress: ${{ github.ref != 'refs/heads/develop' }} # not cancel on develop branch
 
 jobs:
   test:
